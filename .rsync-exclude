@@ -1,0 +1,17 @@
+.git
+.gitignore
+.rsync-exclude
+.idea
+.DS_Store
+node_modules
+asset
+bower_components
+composer.json
+composer.lock
+deploy.sh
+package.json
+package-lock.json
+Gruntfile.js
+/log/*
+/temp/*
+/app/config/config.local.neon
