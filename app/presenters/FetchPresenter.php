@@ -32,15 +32,16 @@ class FetchPresenter extends Presenter
 
     public function renderRun(string $url, ?string $token): void
     {
-        $user = null;
+        $userId = null;
         if ($token !== null) {
-            $user = $this->authenticator->authorize($token);
-            if ($user === null) {
+            $userId = $this->authenticator->authorize($token);
+
+            if ($userId === null) {
                 throw new ForbiddenRequestException('Invalid token');
             }
         }
 
-        Debugger::log("Fetch URL \"$url\"");
+        Debugger::log("Fetch URL \"$url\", userId: \"$userId\"");
 
         $request = $this->getHttpRequest();
         $response = $this->getHttpResponse();
@@ -63,7 +64,7 @@ class FetchPresenter extends Presenter
             'content' => $content->getContent(),
             'code' => $content->getCode(),
             'redirectUrl'=>$content->getRedirectUrl(),
-            'userId' => $user,
+            'userId' => $userId,
         ]);
     }
 }
