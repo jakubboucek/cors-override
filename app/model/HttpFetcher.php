@@ -21,10 +21,10 @@ class HttpFetcher
 
     /**
      * @param string $url
-     * @return false|string
+     * @return Response
      * @throws ForbiddenRequestException
      */
-    public function fetch(string $url)
+    public function fetch(string $url): Response
     {
         if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0) {
             throw new ForbiddenRequestException("Security issue, URL has no valid scheme: $url");
@@ -32,7 +32,8 @@ class HttpFetcher
 
         $cacheKey = $url . $this->userAgent;
 
-        $response = $this->cache->load($cacheKey, function (&$dependencies)use ($url)  {
+        /** @var Response $response */
+        $response = $this->cache->load($cacheKey, function (&$dependencies) use ($url) {
             $dependencies = [
                 Cache::EXPIRE => '15 minutes',
             ];
@@ -41,8 +42,6 @@ class HttpFetcher
 
         return $response;
     }
-
-
 
 
     /**
@@ -65,20 +64,34 @@ class HttpFetcher
 
     /**
      * @param string $url
-     * @return bool|string
+     * @return Response
      */
-    protected function getResponse(string $url)
+    protected function getResponse(string $url): Response
     {
         $curl = curl_init();
         curl_setopt_array($curl, [
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
-            CURLOPT_USERAGENT => $this->userAgent
+            CURLOPT_USERAGENT => $this->userAgent,
+            CURLOPT_FOLLOWLOCATION => false,
         ]);
 
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $redirectUrl = curl_getinfo($curl, CURLINFO_REDIRECT_URL);
+
         curl_close($curl);
-        return $response;
+
+        if ($response === false) {
+            $response = null;
+        }
+
+        if ($redirectUrl === false) {
+            $redirectUrl = null;
+        }
+
+
+        return new Response($response, $httpcode, $redirectUrl);
     }
 
 
