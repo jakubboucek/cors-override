@@ -27,6 +27,8 @@ class FetchPresenter extends Presenter
         $request = $this->getHttpRequest();
         $response = $this->getHttpResponse();
 
+        $userAgent = $request->getHeader('User-Agent');
+
         $origin = $request->getHeader('origin');
         $headers = $request->getHeaders();
 
@@ -34,6 +36,10 @@ class FetchPresenter extends Presenter
             $response->setHeader('Access-Control-Allow-Origin', $origin);
         }
 
+
+        if ($userAgent !== null) {
+            $this->fetcher->setUserAgent($userAgent);
+        }
         $content = $this->fetcher->fetch($url);
 
         $this->sendJson([
