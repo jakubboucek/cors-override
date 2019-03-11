@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b65d6152bf5e8fe67c0e44595b1f7f09",
+    "content-hash": "603c5f9ade1dd699da5592a750a85bd2",
     "packages": [
         {
             "name": "latte/latte",
@@ -1231,16 +1231,16 @@
         },
         {
             "name": "tracy/tracy",
-            "version": "v2.6.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tracy.git",
-                "reference": "e179856e5dcc3ced99df1596cd299246fb1c3ac2"
+                "reference": "2fbe913f09ad6735d3182af760b75111f2b1b5dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tracy/zipball/e179856e5dcc3ced99df1596cd299246fb1c3ac2",
-                "reference": "e179856e5dcc3ced99df1596cd299246fb1c3ac2",
+                "url": "https://api.github.com/repos/nette/tracy/zipball/2fbe913f09ad6735d3182af760b75111f2b1b5dd",
+                "reference": "2fbe913f09ad6735d3182af760b75111f2b1b5dd",
                 "shasum": ""
             },
             "require": {
@@ -1249,7 +1249,7 @@
                 "php": ">=7.1"
             },
             "require-dev": {
-                "nette/di": "^2.4 || ~3.0.0",
+                "nette/di": "^3.0",
                 "nette/tester": "^2.1",
                 "nette/utils": "^2.4 || ^3.0",
                 "psr/log": "^1.0"
@@ -1260,7 +1260,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "3.0-dev"
                 }
             },
             "autoload": {
@@ -1294,17 +1294,20 @@
                 "nette",
                 "profiler"
             ],
-            "time": "2019-03-01T02:12:13+00:00"
+            "time": "2019-03-10T02:28:03+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "tracy/tracy": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2.0"
+        "php": ">=7.2.0",
+        "ext-curl": "*"
     },
     "platform-dev": []
 }
