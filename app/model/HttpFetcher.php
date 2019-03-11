@@ -76,14 +76,19 @@ class HttpFetcher
             CURLOPT_FOLLOWLOCATION => false,
         ]);
 
-        $response = curl_exec($curl);
+        $content = curl_exec($curl);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
         $redirectUrl = curl_getinfo($curl, CURLINFO_REDIRECT_URL);
 
         curl_close($curl);
 
-        if ($response === false) {
-            $response = null;
+        if ($content === false) {
+            $content = null;
+        }
+
+        if ($contentType === false) {
+            $contentType = 'text/plain';
         }
 
         if ($redirectUrl === false) {
@@ -91,7 +96,7 @@ class HttpFetcher
         }
 
 
-        return new Response($response, $httpcode, $redirectUrl);
+        return new Response($content, $httpcode, $contentType, $redirectUrl);
     }
 
 

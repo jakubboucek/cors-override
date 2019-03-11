@@ -14,15 +14,22 @@ class Response
      */
     private $code;
     /**
+     * @var string
+     */
+    private $contentType;
+
+
+    /**
      * @var string|null
      */
     private $redirectUrl;
 
 
-    public function __construct(?string $content, int $code, ?string $redirectUrl)
+    public function __construct(?string $content, int $code, string $contentType, ?string $redirectUrl = null)
     {
         $this->content = $content;
         $this->code = $code;
+        $this->contentType = $contentType;
         $this->redirectUrl = $redirectUrl;
     }
 
@@ -42,6 +49,15 @@ class Response
     public function getCode(): int
     {
         return $this->code;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getContentType(): string
+    {
+        return $this->contentType;
     }
 
 

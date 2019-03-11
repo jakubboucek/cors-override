@@ -63,6 +63,7 @@ class FetchPresenter extends Presenter
         $this->sendJson([
             'content' => $content->getContent(),
             'code' => $content->getCode(),
+            'contentType' => $content->getContentType(),
             'redirectUrl'=>$content->getRedirectUrl(),
             'userId' => $userId,
         ]);
