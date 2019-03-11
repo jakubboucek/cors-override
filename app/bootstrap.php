@@ -4,8 +4,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $configurator = new Nette\Configurator;
 
-$configurator->setDebugMode('185.153.194.166'); // enable for your remote IP
-$configurator->enableTracy(__DIR__ . '/../log');
+//$configurator->setDebugMode('185.153.194.166'); // enable for your remote IP
+$configurator->enableTracy(__DIR__ . '/../log', 'pan@jakubboucek.cz');
 
 $configurator->setTimeZone('Europe/Prague');
 $configurator->setTempDirectory(__DIR__ . '/../temp');
