@@ -1,13 +1,7 @@
-Nette Sandbox
+CORS override
 =============
-
-This is a simple pre-packaged and pre-configured application using the [Nette](https://nette.org)
-that you can use as the starting point for your new applications.
-
-[Nette](https://nette.org) is a popular tool for PHP web development.
-It is designed to be the most usable and friendliest as possible. It focuses
-on security and performance and is definitely one of the safest PHP frameworks.
-
+Simple proxy to pass Same-Origin policy
+---------------------------------------
 
 Installation
 ------------
@@ -15,7 +9,7 @@ Installation
 The best way to install Web Project is using Composer. If you don't have Composer yet,
 download it following [the instructions](https://doc.nette.org/composer). Then use command:
 
-	composer create-project nette/sandbox path/to/install
+	composer create-project jakubboucek/cors-override path/to/install
 	cd path/to/install
 
 
@@ -41,30 +35,4 @@ via a web browser. See [security warning](https://nette.org/security-warning).
 Requirements
 ------------
 
-- Sandbox for Nette 2.4 requires PHP 5.6
-- The master version of Sandbox requires PHP 7.1
-
-To check whether server configuration meets the minimum requirements for
-Nette Framework browse to the directory `/checker` in your project root (i.e. `http://localhost:8000/checker`).
-
-
-Adminer
--------
-
-[Adminer](https://www.adminer.org/) is full-featured database management tool written in PHP and it is part of this Sandbox.
-To use it, browse to the subdirectory `/adminer` in your project root (i.e. `http://localhost:8000/adminer`).
-
-
-Notice: Composer PHP version
-----------------------------
-
-This project forces PHP 5.6 (eventually 7.1) as your PHP version for Composer packages. If you have newer 
-version on production server you should change it in `composer.json`:
-
-```json
-"config": {
-	"platform": {
-		"php": "7.2"
-	}
-}
-```
+- PHP 7.2
