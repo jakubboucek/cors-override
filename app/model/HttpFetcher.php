@@ -21,10 +21,11 @@ class HttpFetcher
 
     /**
      * @param string $url
+     * @param bool $followRedirect
      * @return Response
      * @throws ForbiddenRequestException
      */
-    public function fetch(string $url): Response
+    public function fetch(string $url, bool $followRedirect = false): Response
     {
         if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0) {
             throw new ForbiddenRequestException("Security issue, URL has no valid scheme: $url");
@@ -33,11 +34,11 @@ class HttpFetcher
         $cacheKey = $url . $this->userAgent;
 
         /** @var Response $response */
-        $response = $this->cache->load($cacheKey, function (&$dependencies) use ($url) {
+        $response = $this->cache->load($cacheKey, function (&$dependencies) use ($url, $followRedirect) {
             $dependencies = [
                 Cache::EXPIRE => '15 minutes',
             ];
-            return $this->getResponse($url);
+            return $this->getResponse($url, $followRedirect);
         });
 
         return $response;
@@ -64,22 +65,27 @@ class HttpFetcher
 
     /**
      * @param string $url
+     * @param bool $followRedirect
      * @return Response
      */
-    protected function getResponse(string $url): Response
+    protected function getResponse(string $url, bool $followRedirect = false): Response
     {
         $curl = curl_init();
         curl_setopt_array($curl, [
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $url,
             CURLOPT_USERAGENT => $this->userAgent,
-            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_FOLLOWLOCATION => $followRedirect,
+            CURLOPT_MAXREDIRS => $followRedirect ? 3 : 0,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
         ]);
 
         $content = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $effetciveUrl = $followRedirect ? curl_getinfo($curl, CURLINFO_EFFECTIVE_URL) : $url;
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
         $redirectUrl = curl_getinfo($curl, CURLINFO_REDIRECT_URL);
+        $redirectCount = curl_getinfo($curl, CURLINFO_REDIRECT_COUNT);
 
         curl_close($curl);
 
@@ -96,7 +102,7 @@ class HttpFetcher
         }
 
 
-        return new Response($content, $httpcode, $contentType, $redirectUrl);
+        return new Response($effetciveUrl, $content, $httpCode, $contentType, $redirectUrl, $redirectCount);
     }
 
 

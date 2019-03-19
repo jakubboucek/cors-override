@@ -8,7 +8,14 @@ class Response
     /**
      * @var string|null
      */
+    private $url;
+
+
+    /**
+     * @var string|null
+     */
     private $content;
+
     /**
      * @var int
      */
@@ -24,13 +31,27 @@ class Response
      */
     private $redirectUrl;
 
-
-    public function __construct(?string $content, int $code, string $contentType, ?string $redirectUrl = null)
+    /**
+     * @var int|null
+     */
+    private $redirectCount;
+    public function __construct(?string $url, ?string $content, int $code, string $contentType, ?string $redirectUrl = null, ?int $redirectCount = null)
     {
+        $this->url = $url;
         $this->content = $content;
         $this->code = $code;
         $this->contentType = $contentType;
         $this->redirectUrl = $redirectUrl;
+        $this->redirectCount = $redirectCount;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getUrl(): ?string
+    {
+        return $this->url;
     }
 
 
@@ -67,5 +88,14 @@ class Response
     public function getRedirectUrl(): ?string
     {
         return $this->redirectUrl;
+    }
+
+
+    /**
+     * @return int|null
+     */
+    public function getRedirectCount(): ?int
+    {
+        return $this->redirectCount;
     }
 }

@@ -30,7 +30,7 @@ class FetchPresenter extends Presenter
     }
 
 
-    public function renderRun(string $url, ?string $token): void
+    public function renderRun(string $url, ?string $token, $followRedirect = false): void
     {
         $userId = null;
         if ($token !== null) {
@@ -58,13 +58,22 @@ class FetchPresenter extends Presenter
         if ($userAgent !== null) {
             $this->fetcher->setUserAgent($userAgent);
         }
-        $content = $this->fetcher->fetch($url);
+        $content = $this->fetcher->fetch($url, $followRedirect);
 
         $this->sendJson([
-            'content' => $content->getContent(),
-            'code' => $content->getCode(),
-            'contentType' => $content->getContentType(),
-            'redirectUrl'=>$content->getRedirectUrl(),
+            'response' => [
+                'url' => $content->getUrl(),
+                'code' => $content->getCode(),
+                'content' => $content->getContent(),
+                'contentType' => $content->getContentType(),
+                'redirectUrl' => $content->getRedirectUrl(),
+                'redirectCount' => $content->getRedirectCount(),
+            ],
+            'request' => [
+                'url' => $url,
+                'method' => 'GET',
+            ],
+            'followRedirects' => $followRedirect,
             'userId' => $userId,
         ]);
     }
