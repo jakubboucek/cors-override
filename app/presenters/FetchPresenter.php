@@ -85,8 +85,6 @@ class FetchPresenter extends Presenter
     ): void {
         $httpResponse = $this->getHttpResponse();
 
-        Debugger::barDump($content);
-
         $httpResponse->setCode($content->getCode());
         $httpResponse->setContentType($content->getContentType());
 
