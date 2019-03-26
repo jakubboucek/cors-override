@@ -6,6 +6,7 @@ namespace App\Presenters;
 use App\Model\HttpFetcher;
 use App\Model\TokenAuthenticator;
 use Nette\Application\ForbiddenRequestException;
+use Nette\Application\Responses\TextResponse;
 use Nette\Application\UI\Presenter;
 use Tracy\Debugger;
 
@@ -30,7 +31,7 @@ class FetchPresenter extends Presenter
     }
 
 
-    public function renderRun(string $url, ?string $token, $followRedirect = false): void
+    public function renderRun(string $url, string $format, ?string $token, bool $followRedirect = false): void
     {
         $userId = null;
         if ($token !== null) {
@@ -60,6 +61,60 @@ class FetchPresenter extends Presenter
         }
         $content = $this->fetcher->fetch($url, $followRedirect);
 
+        if ($format === 'json') {
+            $this->sendJsonResponse($url, $followRedirect, $content, $userId);
+        } else {
+            $this->sendHtmlResponse($url, $followRedirect, $content, $userId);
+        }
+    }
+
+
+    /**
+     * @param string $url
+     * @param bool $followRedirect
+     * @param \App\Model\Response $content
+     * @param string|null $userId
+     * @throws \Nette\Application\AbortException
+     * @throws \Nette\Application\UI\InvalidLinkException
+     */
+    protected function sendHtmlResponse(
+        string $url,
+        bool $followRedirect,
+        \App\Model\Response $content,
+        ?string $userId
+    ): void {
+        $httpResponse = $this->getHttpResponse();
+
+        Debugger::barDump($content);
+
+        $httpResponse->setCode($content->getCode());
+        $httpResponse->setContentType($content->getContentType());
+
+        if ($content->getRedirectUrl() !== null) {
+            $parameters = $this->getHttpRequest()->getUrl()->queryParameters;
+            $parameters['url'] = $content->getRedirectUrl();
+
+            $redirectUrl = $this->link('//this', $parameters);
+            $httpResponse->addHeader('Location', $redirectUrl);
+        }
+
+        $this->sendResponse(new TextResponse($content->getContent()));
+    }
+
+
+    /**
+     * @param string $url
+     * @param bool $followRedirect
+     * @param \App\Model\Response $content
+     * @param string|null $userId
+     * @throws \Nette\Application\AbortException
+     */
+    protected function sendJsonResponse(
+        string $url,
+        bool $followRedirect,
+        \App\Model\Response $content,
+        ?string $userId
+    ): void {
         $this->sendJson([
             'response' => [
                 'url' => $content->getUrl(),

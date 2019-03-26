@@ -9,15 +9,21 @@ use Nette\Application\Routers\RouteList;
 
 final class RouterFactory
 {
-	use Nette\StaticClass;
+    use Nette\StaticClass;
 
-	/**
-	 * @return Nette\Application\IRouter
-	 */
-	public static function createRouter()
-	{
-		$router = new RouteList;
-		$router[] = new Route('/fetch', 'Fetch:run');
-		return $router;
-	}
+
+    /**
+     * @return Nette\Routing\Router
+     * @throws Nette\InvalidArgumentException
+     */
+    public static function createRouter(): Nette\Routing\Router
+    {
+        $router = new RouteList;
+        $router[] = new Route('/fetch[!.<format json|html>]', [
+            'presenter' => 'Fetch',
+            'action' => 'run',
+            'format'=> 'json'
+        ]);
+        return $router;
+    }
 }
